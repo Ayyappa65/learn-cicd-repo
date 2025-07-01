@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set; 
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,5 +34,14 @@ public class FacultyController {
     public ResponseEntity<String> addFaculty(@PathVariable String name) {
         faculty.add(name);
         return ResponseEntity.ok("Faculty member added: " + name);
+    }
+
+    @DeleteMapping("/{name}")
+    public ResponseEntity<String> deleteFaculty(@PathVariable String name) {
+        if (faculty.remove(name)) {
+            return ResponseEntity.ok("Faculty member deleted: " + name);
+        } else {
+            return ResponseEntity.notFound().build();       
+        }
     }
 }
