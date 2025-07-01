@@ -1,5 +1,8 @@
 package com.acadamate.faculty.controller;
- 
+
+import java.util.HashSet;
+import java.util.Set; 
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -9,21 +12,26 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1/faculty")
 public class FacultyController {
-   
+
+    private final Set<String> faculty = new HashSet<>();
+
     @GetMapping
-    public ResponseEntity<String> getAllFaculty() {
-        return ResponseEntity.ok("Get all faculty members");
+    public ResponseEntity<Set<String>> getAllFaculty() {
+        return ResponseEntity.ok(faculty);
+    }
+
+    @GetMapping("/{name}")
+    public ResponseEntity<String> getFacultyByName(@PathVariable String name) {
+        return faculty.stream()
+                .filter(f -> f.equalsIgnoreCase(name))
+                .findFirst()
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
  
-    @GetMapping("/{id}")
-    public ResponseEntity<String> getFacuEntityltyById(@PathVariable Long id) {
-        return ResponseEntity.ok("Get faculty member with ID: " + id);
+    @GetMapping("/add/{name}")
+    public ResponseEntity<String> addFaculty(@PathVariable String name) {
+        faculty.add(name);
+        return ResponseEntity.ok("Faculty member added: " + name);
     }
- 
-    @GetMapping("/department/{departmentId}")
-    public ResponseEntity<String> getFacultyByDepartment(@PathVariable Long departmentId) {
-        return ResponseEntity.ok("Get faculty members in department with ID: " + departmentId);
-        // Implement logic to fetch faculty members by department
-    }
- 
 }
